@@ -10,7 +10,7 @@ on:
 env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
-  DOCKER_HUB_IMAGE_NAME: skipero/alpine-docker-with-node-git-bash
+  DOCKER_HUB_IMAGE_NAME: skipero/nodejs-git-bash
 
 jobs:
   plan:
@@ -30,14 +30,21 @@ jobs:
           source-image: library/node
           target-image: ${{ env.DOCKER_HUB_IMAGE_NAME }}
           tags-list: |
-            24-alpine
+            24
 
   build:
     name: Build the docker image (${{ matrix.tag }})
     needs: [plan]
-    if: ${{ fromJSON(needs.plan.outputs.matrix).include[0] }} # docs: <https://bit.ly/2YHHXXs>
+    if: ${{ fromJSON(needs.plan.outputs.matrix).include[0] }} 
+    # docs <https://bit.ly/2YHHXXs>
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
@@ -61,7 +68,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v6 # Action page: <https://github.com/docker/build-push-action>
+      - uses: docker/build-push-action@v6 # Action page <https://github.com/docker/build-push-action>
         with:
           context: .
           file: Dockerfile

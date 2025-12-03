@@ -14,7 +14,7 @@ module.exports = async ({github, context, core}) => {
       }
 
       return !(s.startsWith('//') || s.startsWith('#')) // skip the commented lines
-    }),
+    }).map(tag => tag + "-alpine"),
     sourceImage: getEnv('source-image'),
     targetImage: getEnv('target-image'),
   }

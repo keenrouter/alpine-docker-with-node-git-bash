@@ -10,7 +10,7 @@ on:
 env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
-  DOCKER_HUB_IMAGE_NAME: skipero/nodejs-git-bash
+  DOCKER_HUB_IMAGE_NAME: skipero/nodejs-bun-bash
 
 jobs:
   plan:
@@ -62,11 +62,11 @@ jobs:
           username: ${{ vars.DOCKER_LOGIN }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      #- uses: docker/login-action@v3
+      #  with:
+      #    registry: ghcr.io
+      #    username: ${{ github.actor }}
+      #    password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: docker/build-push-action@v6 # Action page <https://github.com/docker/build-push-action>
         with:

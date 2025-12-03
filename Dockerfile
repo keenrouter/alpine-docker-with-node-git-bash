@@ -10,7 +10,7 @@ RUN set -x \
     && . /etc/os-release \
     && case "$ID" in \
         alpine) \
-            apk add --no-cache bash git openssh \
+            apk add --no-cache bash \
             ;; \
         debian) \
             apt-get update \
@@ -21,5 +21,6 @@ RUN set -x \
     esac \
     # install yarn, if needed (only applies to older versions, like 6 or 7)
     && yarn bin || ( npm install --global yarn && npm cache clean ) \
+    && bun --version || (npm install -g bun && npm cache clean) \
     # show installed application versions
     && git --version && bash --version && ssh -V && npm -v && node -v && yarn -v

@@ -19,6 +19,5 @@ RUN set -x \
             && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
             ;; \
     esac \
-    && (yarn bin || npm install --global yarn) \
-    && (bun -v || npm i -g bun) \
-    && git --version && bash --version && npm -v && node -v && yarn -v
+    && npm i -g bun\
+    && bash --version && npm -v && node -v

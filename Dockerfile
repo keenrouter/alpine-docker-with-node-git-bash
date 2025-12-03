@@ -19,8 +19,6 @@ RUN set -x \
             && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
             ;; \
     esac \
-    # install yarn, if needed (only applies to older versions, like 6 or 7)
-    && yarn bin || ( npm install --global yarn) \
-    && bun -v || npm install -g bun \
-    # show installed application versions
-    && git --version && bash --version && npm -v && node -v && yarn -v && bun -v
+    && (yarn bin || npm install --global yarn) \
+    && (bun -v || npm i -g bun) \
+    && git --version && bash --version && npm -v && node -v && yarn -v

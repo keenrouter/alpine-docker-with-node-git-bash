@@ -29,11 +29,11 @@ jobs:
         env:
           source-image: library/node
           target-image: ${{ env.DOCKER_HUB_IMAGE_NAME }}
-          tags-list: |
-            24
+          tags-map: |
+            24:24-alpine
 
   build:
-    name: Build the docker image (${{ matrix.tag }})
+    name: Build the docker image (${{ matrix.targetTag }})
     needs: [plan]
     if: ${{ fromJSON(needs.plan.outputs.matrix).include[0] }} 
     # docs <https://bit.ly/2YHHXXs>
@@ -74,7 +74,7 @@ jobs:
           file: Dockerfile
           push: true # comment this line for the local workflow running
           platforms: ${{ matrix.platforms }}
-          build-args: "NODE_VERSION=${{ matrix.tag }}"
+          build-args: "NODE_VERSION=${{ matrix.sourceTag }}"
           tags: |
-            ${{ env.DOCKER_HUB_IMAGE_NAME }}:${{ matrix.tag }}
-            ghcr.io/${{ env.IMAGE_NAME }}:${{ matrix.tag }}
+            ${{ env.DOCKER_HUB_IMAGE_NAME }}:${{ matrix.targetTag }}
+#            ghcr.io/$ {{ env.IMAGE_NAME }}:$ {{ matrix.tag }}

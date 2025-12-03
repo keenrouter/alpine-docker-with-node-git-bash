@@ -8,61 +8,69 @@ const {fetchImageTagInfo, getEnv, shouldBeIgnored} = require('./utils')
  */
 module.exports = async ({github, context, core}) => {
   const env = {
-    tagsList: getEnv('tags-list').split('\n').map(s => s.trim()).filter(s => {
-      if (s.length === 0) { // skip empty lines
-        return false
-      }
-
-      return !(s.startsWith('//') || s.startsWith('#')) // skip the commented lines
-    }).map(tag => tag + "-alpine"),
+    tagsMap: getEnv('tags-map').split('\n')
+      .map(s => s.trim())
+      .filter(s => {
+        if (s.length === 0) { return false }
+        return !(s.startsWith('//') || s.startsWith('#')) // skip the commented lines
+      })
+      .reduce((acc, curr) => {
+        const pair = curr.split(':');
+        const key = pair[0];
+        const val = pair.length>1 ? pair[1] : `${key}-alpine`;
+        acc[key] = val;
+        return acc
+      }, {}),
     sourceImage: getEnv('source-image'),
     targetImage: getEnv('target-image'),
   }
 
-  if (env.tagsList.length === 0) {
-    throw new Error('Empty tags list. Set required tag list using step "env.tags-list" key')
+  if (env.tagsMap.length === 0) {
+    throw new Error('Empty tags list. Set required tag list using step "env.tags-map" key')
   } else if (env.sourceImage.length === 0) {
     throw new Error('Source image is not set. Set it using "env.source-image" key')
   } else if (env.targetImage.length === 0) {
     throw new Error('Target image is not set. Set it using "env.target-image" key')
   }
 
-  core.info(`Tags list: ${env.tagsList.join(', ')}`)
+  core.info(`Tags list: ${JSON.stringify(env.tagsMap)}`)
   core.info(`Source image: ${env.sourceImage}, target image: ${env.targetImage}`)
 
-  return await Promise.allSettled(env.tagsList.map(imageTag => {
+  return await Promise.allSettled(Object.entries(env.tagsMap).map(([k, v], i) => {
     return new Promise((resolve, reject) => {
-      fetchImageTagInfo(env.sourceImage, imageTag)
+      fetchImageTagInfo(env.sourceImage, v)
         .then(sourceImageInfo => {
-          fetchImageTagInfo(env.targetImage, imageTag)
+          fetchImageTagInfo(env.targetImage, k)
             .then(targetImageInfo => {
               const timeDeltaMillis = sourceImageInfo.pushedAt.getTime() - targetImageInfo.pushedAt.getTime()
 
-              core.info(`Time difference between source and target images for the ${imageTag}: ${timeDeltaMillis / 1000} sec.`)
+              core.info(`Time difference between source (${k}) and target (${v}) images: ${timeDeltaMillis / 1000} sec.`)
 
               if (targetImageInfo.pushedAt.getTime() < sourceImageInfo.pushedAt.getTime()) {
-                core.info(`Plan to build an image with the tag ${imageTag} (time delta ${timeDeltaMillis / 1000} sec)`)
+                core.info(`Plan to build an image with the tag ${k} (time delta ${timeDeltaMillis / 1000} sec)`)
 
-                return resolve(sourceImageInfo) // source image has a more recent update date - process it
+                return resolve({targetTag: k, sourceImage: sourceImageInfo}) // source image has a more recent update date - process it
               }
 
-              reject(new Error(`The image tag ${imageTag} already updated - skip it`))
+              reject(new Error(`The image tag ${k} already updated - skip it`))
             })
             .catch(_ => {
-              resolve(sourceImageInfo) // we have no this tag in the target repository, and therefore must process it
+              resolve({targetTag: k, sourceImage: sourceImageInfo}) // we have no this tag in the target repository, and therefore must process it
             })
         })
         .catch(reject)
     })
   })).then(async (promisesList) => {
     // matrix docs: <https://git.io/JKOdR>
-    /** @type {{include: {tag: string, platforms: string}[]}} */
+    /** @type {{include: {targetTag: string, sourceTag: string, platforms: string}[]}} */
     const matrix = {include: []}
 
     promisesList.forEach(promise => {
       if (promise.status === 'fulfilled') {
+        /** @type {{targetTag: string, sourceImage: {tag: string, arch: string[]}}} */
+        const result = promise.value;
         /** @type {{tag: string, arch: string[]}} */
-        const image = promise.value
+        const image = result.sourceImage;
 
         image.arch = image.arch.filter(arch => {
           const should = shouldBeIgnored(image.tag, arch)
@@ -76,7 +84,8 @@ module.exports = async ({github, context, core}) => {
 
         if (image.arch.length !== 0) {
           matrix.include.push({
-            tag: image.tag,
+            targetTag: result.targetTag,
+            sourceTag: image.tag,
             platforms: image.arch.join(','),
           })
         } else {

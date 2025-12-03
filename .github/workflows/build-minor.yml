@@ -1,10 +1,15 @@
 name: build-minor
 
 on:
-  schedule: [cron: '10 * * * *'] # every 1 hour
-  push:
-    branches: [master, main]
-    tags-ignore: ['**']
+  workflow_dispatch:
+  #schedule: [cron: '10 * * * *'] # every 1 hour
+  #push:
+  #  branches: [master, main]
+  #  tags-ignore: ['**']
+env:
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+  DOCKER_HUB_IMAGE_NAME: skipero/alpine-docker-with-node-git-bash
 
 jobs:
   plan:
@@ -22,7 +27,7 @@ jobs:
           script: return await require('./.github/scripts/generate-minor-node-matrix.js')({github, context, core})
         env:
           source-image: library/node
-          target-image: tarampampam/node
+          target-image: ${{ env.DOCKER_HUB_IMAGE_NAME }}
 
   build:
     name: Build the docker image (${{ matrix.tag }})
@@ -44,8 +49,8 @@ jobs:
 
       - uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_LOGIN }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ vars.DOCKER_LOGIN }}
+          password: ${{ secrets.DOCKER_TOKEN }}
 
       - uses: docker/login-action@v2
         with:
@@ -61,5 +66,5 @@ jobs:
           platforms: ${{ matrix.platforms }}
           build-args: "NODE_VERSION=${{ matrix.tag }}"
           tags: |
-            tarampampam/node:${{ matrix.tag }}
-            ghcr.io/${{ github.actor }}/node:${{ matrix.tag }}
+            ${{ env.DOCKER_HUB_IMAGE_NAME }}:${{ matrix.tag }}
+            ghcr.io/${{ env.IMAGE_NAME }}:${{ matrix.tag }}

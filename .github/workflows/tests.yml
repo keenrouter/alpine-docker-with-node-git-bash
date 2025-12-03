@@ -1,12 +1,13 @@
 name: tests
 
 on:
-  push:
-    branches: [master, main]
-    tags-ignore: ['**']
-    paths-ignore: ['**.md']
-  pull_request:
-    paths-ignore: ['**.md']
+  workflow_dispatch:
+  #push:
+  #  branches: [master, main]
+  #  tags-ignore: ['**']
+  #  paths-ignore: ['**.md']
+  #pull_request:
+  #  paths-ignore: ['**.md']
 
 concurrency:
   group: ${{ github.ref }}
@@ -29,7 +30,7 @@ jobs: # Docs: <https://git.io/JvxXE>
     strategy:
       fail-fast: false
       matrix:
-        node-version: ['', alpine, latest, 6.17-alpine, 8.12-alpine]
+        node-version: ['', 24-alpine]
     steps:
       - uses: actions/checkout@v3
 

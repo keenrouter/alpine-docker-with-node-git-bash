@@ -20,7 +20,7 @@ RUN set -x \
             ;; \
     esac \
     # install yarn, if needed (only applies to older versions, like 6 or 7)
-    && yarn bin || ( npm install --global yarn && npm cache clean ) \
-    && bun --version || (npm install -g bun && npm cache clean) \
+    && yarn bin || ( npm install --global yarn) \
+    && bun -v || npm install -g bun \
     # show installed application versions
-    && git --version && bash --version && ssh -V && npm -v && node -v && yarn -v
+    && git --version && bash --version && npm -v && node -v && yarn -v && bun -v

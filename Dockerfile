@@ -4,7 +4,7 @@
 # e.g.: `docker build --rm --build-arg "NODE_VERSION=11.8-alpine" -f ./Dockerfile .`
 ARG NODE_VERSION
 
-FROM node:${NODE_VERSION}-alpine
+FROM node:${NODE_VERSION:-alpine}
 
 RUN set -x \
     && . /etc/os-release \

@@ -62,11 +62,11 @@ jobs:
           username: ${{ vars.DOCKER_LOGIN }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      #- uses: docker/login-action@v3
-      #  with:
-      #    registry: ghcr.io
-      #    username: ${{ github.actor }}
-      #    password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: docker/build-push-action@v6 # Action page <https://github.com/docker/build-push-action>
         with:
@@ -77,4 +77,4 @@ jobs:
           build-args: "NODE_VERSION=${{ matrix.sourceTag }}"
           tags: |
             ${{ env.DOCKER_HUB_IMAGE_NAME }}:${{ matrix.targetTag }}
-#            ghcr.io/$ {{ env.IMAGE_NAME }}:$ {{ matrix.tag }}
+            ghcr.io/${{ env.IMAGE_NAME }}:${{ matrix.targetTag }}

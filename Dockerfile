@@ -10,7 +10,7 @@ RUN set -x \
     && . /etc/os-release \
     && case "$ID" in \
         alpine) \
-            apk add --no-cache bash \
+            apk add --no-cache bash git \
             ;; \
         debian) \
             apt-get update \
@@ -20,4 +20,4 @@ RUN set -x \
             ;; \
     esac \
     && npm i -g bun\
-    && bash --version && npm -v && node -v
+    && bash --version && npm -v && node -v && bun -v && git -v

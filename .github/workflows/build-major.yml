@@ -10,7 +10,7 @@ on:
 env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
-  DOCKER_HUB_IMAGE_NAME: skipero/nodejs-bun-bash
+  DOCKER_HUB_IMAGE_NAME: skipero/node-for-ghactions
 
 jobs:
   plan:

@@ -10,7 +10,7 @@ RUN set -x \
     && . /etc/os-release \
     && case "$ID" in \
         alpine) \
-            apk add --no-cache bash git \
+            apk add --no-cache bash git tar \
             ;; \
         debian) \
             apt-get update \

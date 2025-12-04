@@ -50,9 +50,12 @@ module.exports = async ({github, context, core}) => {
                 core.info(`Plan to build an image with the tag ${k} (time delta ${timeDeltaMillis / 1000} sec)`)
 
                 return resolve({targetTag: k, sourceImage: sourceImageInfo}) // source image has a more recent update date - process it
+              } else {
+                core.warning(`Rebuilding the target tag ${k}`);
+                return resolve({targetTag: k, sourceImage: sourceImageInfo})
               }
 
-              reject(new Error(`The image tag ${k} already updated - skip it`))
+              //reject(new Error(`The image tag ${k} already updated - skip it`))
             })
             .catch(_ => {
               resolve({targetTag: k, sourceImage: sourceImageInfo}) // we have no this tag in the target repository, and therefore must process it

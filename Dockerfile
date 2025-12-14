@@ -14,10 +14,11 @@ RUN set -x \
             ;; \
         debian) \
             apt-get update \
-            && apt-get -yq install bash git openssh-server \
+            && apt-get -yq install bash git tar \
             && apt-get -yq clean \
             && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
             ;; \
     esac \
     && npm i -g bun\
-    && bash --version && npm -v && node -v && bun -v && git -v
+    && npm i -g pnpm\
+    && bash --version && npm -v && node -v && pnpm -v && bun -v && git -v

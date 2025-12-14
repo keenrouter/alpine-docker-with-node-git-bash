@@ -9,8 +9,8 @@ on:
 
 env:
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
-  DOCKER_HUB_IMAGE_NAME: skipero/node-for-ghactions
+  #IMAGE_NAME: ${{ github.repository }}
+  DOCKER_HUB_IMAGE_NAME: skipero/node-cli
 
 jobs:
   plan:
@@ -19,7 +19,8 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.result }}
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout source code
+        uses: actions/checkout@v6
 
       - uses: actions/github-script@v6
         id: set-matrix
@@ -62,13 +63,14 @@ jobs:
           username: ${{ vars.DOCKER_LOGIN }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      #- uses: docker/login-action@v3
+      #  with:
+      #    registry: ghcr.io
+      #    username: github.actor
+      #    password: secrets.GITHUB_TOKEN
 
       - uses: docker/build-push-action@v6 # Action page <https://github.com/docker/build-push-action>
+        if: ${{ !env.ACT }}
         with:
           context: .
           file: Dockerfile
@@ -77,4 +79,5 @@ jobs:
           build-args: "NODE_VERSION=${{ matrix.sourceTag }}"
           tags: |
             ${{ env.DOCKER_HUB_IMAGE_NAME }}:${{ matrix.targetTag }}
-            ghcr.io/${{ env.IMAGE_NAME }}:${{ matrix.targetTag }}
+          
+#  ghcr.io/env.IMAGE_NAME:matrix.targetTag

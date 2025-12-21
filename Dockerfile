@@ -10,7 +10,7 @@ RUN set -x \
     && . /etc/os-release \
     && case "$ID" in \
         alpine) \
-            apk add --no-cache bash git tar openssh \
+            apk add --no-cache bash git tar openssh doas \
             ;; \
         debian) \
             apt-get update \
@@ -20,12 +20,13 @@ RUN set -x \
             ;; \
     esac
 
+RUN adduser admin -D -G wheel \
+    && echo "admin:admin" | chpasswd \
+    && echo 'permit :wheel as root' > /etc/doas.d/doas.conf
+
 COPY sshd-actions.conf /etc/ssh/sshd_config.d/sshd-actions.conf
 
 RUN ssh-keygen -A \
-    && echo password | passwd root --stdin \
     && npm i -g bun \
     && npm i -g pnpm \
     && bash --version && npm -v && node -v && pnpm -v && bun -v && git -v
-
-CMD ["/usr/sbin/sshd"]

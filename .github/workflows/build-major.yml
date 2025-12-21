@@ -70,7 +70,7 @@ jobs:
       #    password: secrets.GITHUB_TOKEN
 
       - uses: docker/build-push-action@v6 # Action page <https://github.com/docker/build-push-action>
-        if: ${{ env.GITHUB_ACTIONS || vars.LOCAL_PUSH }} 
+        if: ${{ !env.ACT || vars.LOCAL_PUSH }} 
         # gh act -j build --secret-file .env --var-file .env --var LOCAL_PUSH
         with:
           context: .

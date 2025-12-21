@@ -13,6 +13,7 @@ Commands available in the image:
 - `npm`
 - `pnpm`
 - `bun`
+- `opnessh`
 - and [busybox commands](https://busybox.net/downloads/BusyBox.html#commands)
 
 > The image is based on the Alpine OS.

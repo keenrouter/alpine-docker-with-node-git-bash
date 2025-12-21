@@ -10,7 +10,7 @@ RUN set -x \
     && . /etc/os-release \
     && case "$ID" in \
         alpine) \
-            apk add --no-cache bash git tar \
+            apk add --no-cache bash git tar openssh \
             ;; \
         debian) \
             apt-get update \
@@ -18,7 +18,14 @@ RUN set -x \
             && apt-get -yq clean \
             && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
             ;; \
-    esac \
-    && npm i -g bun\
-    && npm i -g pnpm\
+    esac
+
+COPY sshd-actions.conf /etc/ssh/sshd_config.d/sshd-actions.conf
+
+RUN ssh-keygen -A \
+    && echo password | passwd root --stdin \
+    && npm i -g bun \
+    && npm i -g pnpm \
     && bash --version && npm -v && node -v && pnpm -v && bun -v && git -v
+
+CMD ["/usr/sbin/sshd"]

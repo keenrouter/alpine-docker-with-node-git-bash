@@ -14,7 +14,7 @@ Commands available in the image:
 - `bun`
 - `opnessh`
 
-> The image is based on the Alpine OS.
+> The image is based on the Debian OS (trixie).
 
 ### Docker registries:
 

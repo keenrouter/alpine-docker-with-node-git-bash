@@ -7,7 +7,7 @@ on:
     paths: ['README.md']
 
 env:
-  DOCKER_HUB_IMAGE_NAME: skipero/node-cli
+  DOCKER_HUB_IMAGE_NAME: skipero/node-git-bun
 
 jobs:
   docker-hub-description:

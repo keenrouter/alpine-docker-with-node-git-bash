@@ -8,13 +8,11 @@ Commands available in the image:
 
 - `git`
 - `bash`
-- `tar`, overrides the busybox's tar
 - `node`
 - `npm`
 - `pnpm`
 - `bun`
 - `opnessh`
-- and [busybox commands](https://busybox.net/downloads/BusyBox.html#commands)
 
 > The image is based on the Alpine OS.
 
@@ -46,7 +44,7 @@ $ docker run --rm \
     --volume "$(pwd):/app" \
     --workdir "/app" \
     --user "$(id -u):$(id -g)" \
-    skipero/node-cli:24 \
+    skipero/node-git-bun:24 \
     yarn install
 ```
 
@@ -55,7 +53,7 @@ Or using with `docker-compose.yml`:
 ```yml
 services:
   node:
-    image: skipero/node-cli:24
+    image: skipero/node-git-bun:24
     volumes:
       - ./src:/app:rw
     working_dir: /app

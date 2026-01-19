@@ -9,7 +9,7 @@ on:
 env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
-  DOCKER_HUB_IMAGE_NAME: skipero/alpine-docker-with-node-git-bash
+  DOCKER_HUB_IMAGE_NAME: skipero/node-git-bun
 
 jobs:
   plan:

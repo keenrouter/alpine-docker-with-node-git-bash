@@ -178,5 +178,6 @@ module.exports = {
   fetchImageTagInfo,
   fetchTagsHistory,
   shouldBeIgnored,
+  shouldBePermitted,
   getEnv,
 }

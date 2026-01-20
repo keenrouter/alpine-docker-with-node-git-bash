@@ -10,7 +10,7 @@ on:
 env:
   # github.repository as <account>/<repo>
   #IMAGE_NAME: github.repository
-  DOCKER_HUB_IMAGE_NAME: skipero/node-git-bun
+  DOCKER_HUB_IMAGE_NAME: skipero/neat-ci
 
 jobs:
   plan:
@@ -31,7 +31,7 @@ jobs:
           source-image: library/node
           target-image: ${{ env.DOCKER_HUB_IMAGE_NAME }}
           tags-map: |
-            24:24-trixie-slim
+            1:24-trixie-slim
 
   build:
     name: Build the docker image (${{ matrix.targetTag }})
@@ -74,7 +74,7 @@ jobs:
           file: Dockerfile
           push: true # comment this line for the local workflow running
           platforms: ${{ matrix.platforms }}
-          build-args: "NODE_VERSION=${{ matrix.sourceTag }}"
+          build-args: "FROM_IMAGE=node:${{ matrix.sourceTag }}"
           tags: |
             ${{ env.DOCKER_HUB_IMAGE_NAME }}:${{ matrix.targetTag }}
           

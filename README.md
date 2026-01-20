@@ -1,6 +1,6 @@
 # Motiviation
 
-Light Docker image with Node.js and auxiliary commands for running in CI/CD.
+Light Docker image with Node.js and auxiliary commands for running CI/CD.
 
 ## Installed applications
 
@@ -8,11 +8,13 @@ Commands available in the image:
 
 - `git`
 - `bash`
-- `node`
+- `node` (version 24)
 - `npm`
 - `pnpm`
 - `bun`
-- `opnessh`
+- `volta`
+- `openssh`, e.g. `/usr/sbin/sshd`
+- `openjdk` (version 25), e.g. `java --version`
 
 > The image is based on the Debian OS (trixie).
 
@@ -22,7 +24,7 @@ You can check all existing tags in one of the following docker-registries:
 
 | Registry                                   | Image                      |
 |--------------------------------------------|----------------------------|
-| [Docker Hub][docker-hub]                   | `skipero/node-cli`         |
+| [Docker Hub][docker-hub]                   | `skipero/neat-ci`         |
 | 
 
 Supported architectures:
@@ -32,7 +34,7 @@ Supported architectures:
 ## Supported tags
 
 - `latest`
-- `24`
+- `1`
 
 
 ## How can I use this?
@@ -44,7 +46,7 @@ $ docker run --rm \
     --volume "$(pwd):/app" \
     --workdir "/app" \
     --user "$(id -u):$(id -g)" \
-    skipero/node-git-bun:24 \
+    skipero/neat-ci:1 \
     yarn install
 ```
 
@@ -53,10 +55,12 @@ Or using with `docker-compose.yml`:
 ```yml
 services:
   node:
-    image: skipero/node-git-bun:24
+    image: skipero/neat-ci:1
     volumes:
       - ./src:/app:rw
     working_dir: /app
     command: []
 ```
+
+SSH into container with username:password `admin:admin`.
 

@@ -159,6 +159,21 @@ const shouldBeIgnored = (tag, arch) => {
   return false
 }
 
+const shouldBePermitted = (tag, arch) => {
+  if (tag in tagsArchIgnoreList) {
+    const archList = tagsArchIgnoreList[tag]
+    if (archList.length === 0) {
+      return false
+    }
+    for (let i = 0; i < archList.length; i++) {
+      if (archList[i] === arch) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 module.exports = {
   fetchImageTagInfo,
   fetchTagsHistory,

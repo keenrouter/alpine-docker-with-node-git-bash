@@ -1,4 +1,4 @@
-const {fetchImageTagInfo, getEnv, shouldBeIgnored} = require('./utils')
+const { fetchImageTagInfo, getEnv, shouldBePermitted } = require('./utils')
 
 /**
  * @param {Object} github Docs: <https://octokit.github.io/rest.js/v18>
@@ -16,9 +16,9 @@ module.exports = async ({github, context, core}) => {
       })
       .reduce((acc, curr) => {
         const pair = curr.split(':');
-        const key = pair[0];
-        const val = pair.length>1 ? pair[1] : `${key}-alpine`;
-        acc[key] = val;
+        if(pair.length>1){
+          acc[pair[0]] = pair[1];
+        }
         return acc
       }, {}),
     sourceImage: getEnv('source-image'),
@@ -76,13 +76,14 @@ module.exports = async ({github, context, core}) => {
         const image = result.sourceImage;
 
         image.arch = image.arch.filter(arch => {
+          /*
           const should = shouldBeIgnored(image.tag, arch)
-
           if (should === true) {
             core.info(`Architecture ${arch} for the tag ${image.tag} ignored (rule from the ignore-list)`)
           }
-
           return !should
+          */
+          return shouldBePermitted(image.tag, arch);
         })
 
         if (image.arch.length !== 0) {

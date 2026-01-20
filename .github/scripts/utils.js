@@ -135,7 +135,6 @@ const getEnv = (name) => {
  * @type {Object.<string, string[]>}
  */
 const tagsArchIgnoreList = require('./ignorelist.json')
-
 /**
  * @param {string} tag
  * @param {string} arch
@@ -159,9 +158,14 @@ const shouldBeIgnored = (tag, arch) => {
   return false
 }
 
+/**
+ *
+ * @type {Object.<string, string[]>}
+ */
+const tagsArchPermitList = require('./permitlist.json')
 const shouldBePermitted = (tag, arch) => {
-  if (tag in tagsArchIgnoreList) {
-    const archList = tagsArchIgnoreList[tag]
+  if (tag in tagsArchPermitList) {
+    const archList = tagsArchPermitList[tag]
     if (archList.length === 0) {
       return false
     }

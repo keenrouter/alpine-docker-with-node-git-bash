@@ -77,5 +77,6 @@ jobs:
           build-args: "FROM_IMAGE=node:${{ matrix.sourceTag }}"
           tags: |
             ${{ env.DOCKER_HUB_IMAGE_NAME }}:${{ matrix.targetTag }}
+            ${{ env.DOCKER_HUB_IMAGE_NAME }}:latest
           
 #  ghcr.io/env.IMAGE_NAME:matrix.targetTag

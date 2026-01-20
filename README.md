@@ -46,8 +46,8 @@ $ docker run --rm \
     --volume "$(pwd):/app" \
     --workdir "/app" \
     --user "$(id -u):$(id -g)" \
-    skipero/neat-ci:1 \
-    yarn install
+    skipero/neat-ci:latest \
+    npm ci
 ```
 
 Or using with `docker-compose.yml`:

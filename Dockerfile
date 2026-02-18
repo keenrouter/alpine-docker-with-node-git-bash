@@ -20,6 +20,7 @@ RUN set -x \
             && apt-get -yq clean openjdk-25-jdk \
             && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
             && curl https://get.volta.sh | bash \
+            && snap install --classic opentofu \
             && useradd admin \
             && echo admin | passwd admin --stdin \
             && usermod -aG sudo admin \

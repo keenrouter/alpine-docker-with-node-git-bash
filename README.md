@@ -15,6 +15,7 @@ Commands available in the image:
 - `volta`
 - `openssh`, e.g. `/usr/sbin/sshd`
 - `openjdk` (version 25), e.g. `java --version`
+- `tofu`, OpenTofu - like Terraform, but licenced under MPL 2.0
 
 > The image is based on the Debian OS (trixie).
 

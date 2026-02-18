@@ -4,6 +4,10 @@
 ARG FROM_IMAGE
 
 FROM ${FROM_IMAGE}
+FROM ghcr.io/opentofu/opentofu:minimal AS tofu
+
+# Copy the tofu binary from the minimal image
+COPY --from=tofu /usr/local/bin/tofu /usr/local/bin/tofu
 
 RUN set -x \
     && . /etc/os-release \
